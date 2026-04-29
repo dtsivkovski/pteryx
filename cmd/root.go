@@ -1,6 +1,5 @@
 /*
 Copyright © 2026 NAME HERE <EMAIL ADDRESS>
-
 */
 package cmd
 
@@ -10,17 +9,15 @@ import (
 	"github.com/spf13/cobra"
 )
 
-
-
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "pteryx",
+	Use:   "pteryx [file]",
 	Short: "A file checker that verifies correct file signatures",
 	Long: `
            ▓▓▓▓▓                                            
          ▓▒▒▒▒░▒▒█             ▓█▓▓▓▓                       
        ▓▓▓▒▒███▒▓▓           ▓████▓▓███▓███▓▓               
-     ▓    █▓▓▓█▓▓▓        ▓▓██████████▓██████▓▓▓            
+     ▓▓    █▓▓▓█▓▓▓        ▓▓██████████▓██████▓▓▓            
          ▓█   ▓▓▒█     ▓▓▓███████████████▓▓█▓███▓█▓▒        
        ▓▓      ▓▓█   ▓▓██████████████▓▓██     █▓▓██▓█▓      
            ▓▓▓▓▓█▓▓▓▒▓█████████████                  ██▓    
@@ -28,20 +25,31 @@ var rootCmd = &cobra.Command{
      ▓█████▓▓████▓▓█████████▓█                           ██ 
     ▓████████████████████▓██                               █
   ▓█████████▓      ▓████▓█                                  
-  ▓██████           ▓███▓ █                                 
- ▓████▓              █▓█ █                                  
- ███▓▓                 ██ █                                 
+  ▓██████           ▓███▓ █         ==============          
+ ▓████▓              █▓█ █          ==  PTERYX  ==          
+ ███▓▓                 ██ █         ==============          
 ▓███                     ▓                                  
 ███                       █                                 
 ██                                                          
- █                                                          
+ █             
+
 Pteryx is a file checker that verifies correct file signatures.
 It helps ensure that files are not intentionally or accidentally misnamed,
-made for use in digital forensics and incident response and malware analysis.
-`,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	// Run: func(cmd *cobra.Command, args []string) { },
+made for use in digital forensics and incident response and malware analysis.`,
+	Args: cobra.MaximumNArgs(1),
+	RunE: func(cmd *cobra.Command, args []string) error {
+		if len(args) == 0 {
+			return cmd.Help()
+		}
+
+		return runFileCheck(args[0])
+	},
+}
+
+// checks the file signature
+func runFileCheck(filePath string) error {
+	print(filePath)
+	return nil
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -64,5 +72,3 @@ func init() {
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
-
-
