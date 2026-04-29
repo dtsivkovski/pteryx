@@ -16,9 +16,29 @@ import (
 var rootCmd = &cobra.Command{
 	Use:   "pteryx",
 	Short: "A file checker that verifies correct file signatures",
-	Long: `Pteryx is a file checker that verifies correct file signatures.
+	Long: `
+           ▓▓▓▓▓                                            
+         ▓▒▒▒▒░▒▒█             ▓█▓▓▓▓                       
+       ▓▓▓▒▒███▒▓▓           ▓████▓▓███▓███▓▓               
+     ▓    █▓▓▓█▓▓▓        ▓▓██████████▓██████▓▓▓            
+         ▓█   ▓▓▒█     ▓▓▓███████████████▓▓█▓███▓█▓▒        
+       ▓▓      ▓▓█   ▓▓██████████████▓▓██     █▓▓██▓█▓      
+           ▓▓▓▓▓█▓▓▓▒▓█████████████                  ██▓    
+      ▓███▓▓▓███▓██▓████████████                        ▓▓  
+     ▓█████▓▓████▓▓█████████▓█                           ██ 
+    ▓████████████████████▓██                               █
+  ▓█████████▓      ▓████▓█                                  
+  ▓██████           ▓███▓ █                                 
+ ▓████▓              █▓█ █                                  
+ ███▓▓                 ██ █                                 
+▓███                     ▓                                  
+███                       █                                 
+██                                                          
+ █                                                          
+Pteryx is a file checker that verifies correct file signatures.
 It helps ensure that files are not intentionally or accidentally misnamed,
-made for use in digital forensics and incident response and malware analysis.`,
+made for use in digital forensics and incident response and malware analysis.
+`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	// Run: func(cmd *cobra.Command, args []string) { },
