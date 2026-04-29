@@ -2,13 +2,47 @@ package cmd
 
 import (
 	"fmt"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"strings"
 )
 
+// checks if path is file or dir and runs apporpriate check
+func runPathCheck(path string, allowDirectory bool) error {
+	info, err := os.Stat(path)
+	if err != nil { // return error if stat fails
+		return fmt.Errorf("stat %q: %w", path, err)
+	}
+
+	if info.IsDir() { // if directory, check if allowed
+		if !allowDirectory {
+			return fmt.Errorf("%q is a directory; use -d or --directory to check directories", path)
+		}
+
+		return runDirectoryCheck(path)
+	}
+
+	return runFileCheck(path, false)
+}
+
+// checks each file signature in the entire directory
+func runDirectoryCheck(dirPath string) error {
+	fmt.Printf("✵ Flying over directory (non-recursive): %s\n", dirPath)
+	return filepath.WalkDir(dirPath, func(path string, entry fs.DirEntry, err error) error {
+		if err != nil {
+			return fmt.Errorf("walk %q: %w", path, err)
+		}
+
+		if entry.IsDir() {
+			return nil
+		}
+		return runFileCheck(path, true)
+	})
+}
+
 // checks the file signature
-func runFileCheck(filePath string) error {
+func runFileCheck(filePath string, indent bool) error {
 	// check if signature map known
 	ext := strings.ToLower(filepath.Ext(filePath))
 	signatures, ok := fileSignatures[ext]
@@ -55,14 +89,23 @@ func runFileCheck(filePath string) error {
 		}
 	}
 
+	if indent { // indent for dir output
+		fmt.Print("  ")
+	}
+
 	if !matched {
 		fmt.Printf("%s✗%s %s %sis not a %s file%s\n", red, reset, filePath, red, ext, reset)
 			actualExts := findSignatureMatches(buffer)
+
+			if indent { // indent for dir output
+				fmt.Print("  ")
+			}
+
 			if len(actualExts) == 0 {
 				fmt.Print("└─ Unknown signature\n")
 			} else {
 				fmt.Printf("%s└─ File signature matches: %s", red, reset)
-				for i := range actualExts {
+				for i := range actualExts { 
 					if i == len(actualExts) - 1 {
 						fmt.Printf("%s\n", actualExts[i])
 					} else {

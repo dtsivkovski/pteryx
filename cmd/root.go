@@ -48,8 +48,14 @@ made for use in digital forensics and incident response and malware analysis.`,
 			return cmd.Help()
 		}
 
-		// run check on file
-		return runFileCheck(args[0])
+		// check if directory flag set
+		allowDirectory, err := cmd.Flags().GetBool("directory")
+			if err != nil {
+				return err
+			}
+
+		// run path check (file or dir allowed)
+		return runPathCheck(args[0], allowDirectory)
 	},
 }
 
@@ -71,5 +77,5 @@ func init() {
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
-	// rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	rootCmd.Flags().BoolP("directory", "d", false, "Check all files in a given directory")
 }
