@@ -16,12 +16,9 @@ import (
 var rootCmd = &cobra.Command{
 	Use:   "pteryx",
 	Short: "A file checker that verifies correct file signatures",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Long: `Pteryx is a file checker that verifies correct file signatures.
+It helps ensure that files are not intentionally or accidentally misnamed,
+made for use in digital forensics and incident response and malware analysis.`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	// Run: func(cmd *cobra.Command, args []string) { },
