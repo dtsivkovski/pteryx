@@ -10,9 +10,10 @@ import (
 )
 
 const (
-	cyan = "\033[36m"
-	red   = "\033[31m"
-	reset = "\033[0m"
+	magenta = "\033[35m"
+	cyan    = "\033[36m"
+	red     = "\033[31m"
+	reset   = "\033[0m"
 )
 
 // rootCmd represents the base command when called without any subcommands
@@ -50,12 +51,17 @@ made for use in digital forensics and incident response and malware analysis.`,
 
 		// check if directory flag set
 		allowDirectory, err := cmd.Flags().GetBool("directory")
-			if err != nil {
-				return err
-			}
+		if err != nil {
+			return err
+		}
 
-		// run path check (file or dir allowed)
-		return runPathCheck(args[0], allowDirectory)
+		// check recursion flag
+		recursive, err := cmd.Flags().GetBool("recursive")
+		if err != nil {
+			return err
+		}
+
+		return runPathCheck(args[0], allowDirectory, recursive)
 	},
 }
 
@@ -77,5 +83,6 @@ func init() {
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
-	rootCmd.Flags().BoolP("directory", "d", false, "Check all files in a given directory")
+	rootCmd.Flags().BoolP("directory", "d", false, "check files in a directory")
+	rootCmd.Flags().BoolP("recursive", "r", false, "recursively check directories")
 }
