@@ -4,7 +4,6 @@ Copyright © 2026 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -49,40 +48,9 @@ made for use in digital forensics and incident response and malware analysis.`,
 			return cmd.Help()
 		}
 
+		// run check on file
 		return runFileCheck(args[0])
 	},
-}
-
-// checks the file signature
-func runFileCheck(filePath string) error {
-	// try to open file
-	f, err := os.Open(filePath)
-	if err != nil {
-		return fmt.Errorf("open %q: %w", filePath, err)
-	}
-	defer f.Close()
-
-	// make 4 byte buffer
-	buffer := make([]byte, 4)
-
-	// read attempt
-	n, err := f.Read(buffer)
-	if err != nil {
-		return fmt.Errorf("read %q: %w", filePath, err)
-	}
-
-	if n < 3 { // file too small
-		return fmt.Errorf("%q is too small to check for a JPEG signature", filePath)
-	}
-
-	// hardcode JPEG check initially
-	if buffer[0] == 0xFF && buffer[1] == 0xD8 && buffer[2] == 0xFF {
-		fmt.Printf("%s✓%s %s %sis a .JPEG%s\n", cyan, reset, filePath, cyan, reset)
-		return nil
-	}
-
-	fmt.Printf("%s✗%s %s %sis not a .JPEG%s\n", red, reset, filePath, red, reset)
-	return nil
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
