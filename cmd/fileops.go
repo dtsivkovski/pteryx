@@ -21,8 +21,19 @@ type ScanStats struct {
 func runPathCheck(path string, allowDirectory bool, recursive bool) error {
 	stats := &ScanStats{} // initialize stats to track results
 
+	// open log file (or create) for appending
+	logFile, err := openLogFile("pteryx.log")
+	if err != nil {
+		return err
+	}
+	defer func() {
+		if err := closeLogFile(logFile); err != nil {
+			fmt.Fprintln(os.Stderr, err)
+		}
+	}()
+
 	// run path check with stats tracking
-	err := runPathCheckWithStats(path, allowDirectory, recursive, stats)
+	err = runPathCheckWithStats(path, allowDirectory, recursive, stats, logFile)
 	if err != nil {
 		return err
 	}
@@ -33,7 +44,7 @@ func runPathCheck(path string, allowDirectory bool, recursive bool) error {
 }
 
 // check if path is file or dir and runs appropriate check, while tracking stats
-func runPathCheckWithStats(path string, allowDirectory bool, recursive bool, stats *ScanStats) error {
+func runPathCheckWithStats(path string, allowDirectory bool, recursive bool, stats *ScanStats, logFile *os.File) error {
 	info, err := os.Stat(path)
 	if err != nil { // return error if stat fails
 		return fmt.Errorf("stat %q: %w", path, err)
@@ -44,19 +55,18 @@ func runPathCheckWithStats(path string, allowDirectory bool, recursive bool, sta
 			return fmt.Errorf("%q is a directory; use -d or --directory to check directories", path)
 		}
 
-		return runDirectoryCheck(path, recursive, stats)
+		return runDirectoryCheck(path, recursive, stats, logFile)
 	}
 
 	if recursive {
 		return fmt.Errorf("-r or --recursive can only be used with -d or --directory")
 	}
 
-	return runFileCheck(path, false, stats)
+	return runFileCheck(path, false, stats, logFile)
 }
 
-
 // checks each file signature in the entire directory
-func runDirectoryCheck(dirPath string, recursive bool, stats *ScanStats) error {
+func runDirectoryCheck(dirPath string, recursive bool, stats *ScanStats, logFile *os.File) error {
 	if recursive {
 		// walk entire dir recursively
 		fmt.Printf("%s✵ Swooping into directory (RECURSIVE):%s %s\n", magenta, reset, dirPath)
@@ -69,7 +79,7 @@ func runDirectoryCheck(dirPath string, recursive bool, stats *ScanStats) error {
 				return nil
 			}
 
-			return runFileCheck(path, true, stats)
+			return runFileCheck(path, true, stats, logFile)
 		})
 	}
 
@@ -88,7 +98,7 @@ func runDirectoryCheck(dirPath string, recursive bool, stats *ScanStats) error {
 		}
 
 		filePath := filepath.Join(dirPath, entry.Name())
-		if err := runFileCheck(filePath, true, stats); err != nil {
+		if err := runFileCheck(filePath, true, stats, logFile); err != nil {
 			return err
 		}
 	}
@@ -97,7 +107,7 @@ func runDirectoryCheck(dirPath string, recursive bool, stats *ScanStats) error {
 }
 
 // checks the file signature
-func runFileCheck(filePath string, indent bool, stats *ScanStats) error {
+func runFileCheck(filePath string, indent bool, stats *ScanStats, logFile *os.File) error {
 	// check if signature map known
 	ext := strings.ToLower(filepath.Ext(filePath))
 	signatures, ok := fileSignatures[ext]
@@ -160,15 +170,13 @@ func runFileCheck(filePath string, indent bool, stats *ScanStats) error {
 		if len(actualExts) == 0 {
 			fmt.Print("└─ Unknown signature\n")
 		} else {
-			fmt.Printf("%s└─ File signature matches: %s", red, reset)
-			for i := range actualExts {
-				if i == len(actualExts)-1 {
-					fmt.Printf("%s\n", actualExts[i])
-				} else {
-					fmt.Printf("%s, ", actualExts[i])
-				}
-			}
+			fmt.Printf("%s└─ File signature matches: %s%s\n", red, reset, strings.Join(actualExts, ", "))
 		}
+
+		if err := writeMismatchLog(logFile, filePath, ext, actualExts); err != nil {
+			return err
+		}
+
 		return nil
 	}
 	stats.Passed++
@@ -184,7 +192,7 @@ func runFileCheck(filePath string, indent bool, stats *ScanStats) error {
 // check if signature matches anything else
 func findSignatureMatches(buffer []byte) []string {
 	var matches []string // account for multiple signature possibilities
-	bestScore := 0 // use scoring to prioritize more specific signatures
+	bestScore := 0       // use scoring to prioritize more specific signatures
 
 	for ext, signatures := range fileSignatures {
 		for _, signature := range signatures {
