@@ -12,7 +12,22 @@ go build -o pteryx
 ## Usage
 
 ```bash
-pteryx [flags] <file or directory path>
+pteryx sig <file>
+pteryx sig <directory> -d
+pteryx sig <directory> -d -r
+```
+
+
+Create hash baseline
+```bash
+pteryx hash create <file>
+pteryx hash create <directory> -d -r -o pteryx.hash
+```
+
+Compare files against saved hash baseline
+```bash
+pteryx hash compare <file> -i pteryx.hash
+pteryx hash compare <directory> -d -r -i pteryx.hash
 ```
 
 ## Attribution
@@ -29,5 +44,4 @@ data/file_sigs.normalized.json contains parser-oriented cleanup of apparent
 field formatting issues, such as Header offset values like "0(null)".
 
 Copyright © 2002-2026 Gary C. Kessler. Used with attribution.
-
 

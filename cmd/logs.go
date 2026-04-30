@@ -61,3 +61,40 @@ func writeMismatchLog(file *os.File, filePath string, expectedExt string, actual
 
 	return nil
 }
+
+// write any string to log
+func writeAuditLog(file *os.File, format string, args ...any) error {
+	if file == nil {
+		return nil
+	}
+
+	_, err := fmt.Fprintf(file, format+"\n", args...)
+	if err != nil {
+		return fmt.Errorf("write log: %w", err)
+	}
+
+	return nil
+}
+
+// write hash mismatch log entry when a file's current hash differs from the baseline
+func writeHashMismatchLog(file *os.File, expected HashRecord, current HashRecord) error {
+	if file == nil {
+		return nil
+	}
+
+	// write hash mismatch details to file
+	_, err := fmt.Fprintf(file, "HASH_MISMATCH path=%q expected_sha256=%q current_sha256=%q expected_size=%d current_size=%d baseline_modified=%q current_modified=%q\n",
+		expected.Path,
+		expected.SHA256,
+		current.SHA256,
+		expected.Size,
+		current.Size,
+		expected.Modified,
+		current.Modified,
+	)
+	if err != nil {
+		return fmt.Errorf("write log: %w", err)
+	}
+
+	return nil
+}
