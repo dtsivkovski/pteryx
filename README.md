@@ -43,7 +43,8 @@ File signature data derived from [Gary C. Kessler's File Signature Table](https:
 
 The original GCK file signature JSON is preserved in [data/file_sigs.json](https://github.com/dtsivkovski/pteryx/blob/main/data/file_sigs.json).
 [data/file_sigs.normalized.json](https://github.com/dtsivkovski/pteryx/blob/main/data/file_sigs_normalized.json) contains parser-oriented cleanup of apparent
-field formatting issues, such as Header offset values like "0(null)".
+field formatting issues, such as Header offset values like "0(null)". Copyright © 2002-2026 Gary C. Kessler. Used with attribution.
 
-Copyright © 2002-2026 Gary C. Kessler. Used with attribution.
+## Why Pteryx?
 
+I chose pteryx to name it after flying dinosaurs, but specifically after this cool one called the [Hatzegopteryx](https://en.wikipedia.org/wiki/Hatzegopteryx). I love how it's a flying dinosaur but comparable to the size of a giraffe.
