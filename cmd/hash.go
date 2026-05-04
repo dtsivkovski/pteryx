@@ -144,7 +144,19 @@ func runHashCreate(path string, allowDirectory bool, recursive bool, outputPath 
 		return err
 	}
 
-	fmt.Printf("%s✵ Hash baseline created:%s %s\n", magenta, reset, outputPath)
+	fmt.Print(`             █▓▓        
+             ▒▒▒▒▒▒     
+            ▒▓     ▓▓▓  
+           ▒▒           
+          ▒▒            
+       ▓▓▒▒▓            
+    ▓ ▓▒▓▒▓▓            
+    ▓ ▓▒ ▓▓▒▒      █    
+    ▓▓▓    ▓▓   █     ▓ 
+    ▓▓▓     ██    ▓ █   
+      ▒█                
+`)
+	fmt.Printf("%s✵ Pteryx counted all its eggs (hash baseline created):%s %s\n", magenta, reset, outputPath)
 	fmt.Printf("%sFiles hashed:%s %d\n", cyan, reset, len(records))
 
 	return nil
@@ -400,7 +412,7 @@ func printHashCompareSummary(stats HashCompareStats) {
     ▓▓▓     ██    ▓ █   
       ▒█                
 `)
-	fmt.Printf("\n%sPteryx counted all its eggs:%s\n", magenta, reset)
+	fmt.Printf("\n%s✵ Pteryx re-counted all its eggs (checked hash against baseline):%s\n", magenta, reset)
 	fmt.Printf("%sUnchanged:%s %d\n", cyan, reset, stats.Unchanged)
 	fmt.Printf("%sChanged:%s %d\n", red, reset, stats.Changed)
 	fmt.Printf("%sAdded:%s %d\n", magenta, reset, stats.Added)

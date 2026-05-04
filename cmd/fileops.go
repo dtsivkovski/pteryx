@@ -224,15 +224,15 @@ func printScanSummary(stats *ScanStats) {
              ▒▒▒▒▒▒     
             ▒▓     ▓▓▓  
            ▒▒           
-          ▒▒            
-       ▓▓▒▒▓            
-    ▓ ▓▒▓▒▓▓            
-    ▓ ▓▒ ▓▓▒▒           
-    ▓▓▓    ▓▓           
-    ▓▓▓     ██          
+          ▒▒         ▒   ▒
+       ▓▓▒▒▓      ▒ ▒  ▓▒
+    ▓ ▓▒▓▒▓▓       ▒▓▒▓ ▓ ▒
+    ▓ ▓▒ ▓▓▒▒       ▒▓▓▓
+    ▓▓▓    ▓▓     █▒▓▓▓▓▓█
+    ▓▓▓     ██     ██████    
       ▒█                
 `)
-	fmt.Printf("\n%sBack from the hunt! Here's what Pteryx caught:%s\n", magenta, reset)
+	fmt.Printf("\n%s✵ Back from the hunt (checked signatures)! Here's what Pteryx caught:%s\n", magenta, reset)
 	fmt.Printf("%sChecked:%s %d\n", magenta, reset, stats.Checked)
 	fmt.Printf("%sPassed:%s %d\n", cyan, reset, stats.Passed)
 	fmt.Printf("%sFailed:%s %d\n", red, reset, stats.Failed)
