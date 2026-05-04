@@ -1,19 +1,7 @@
-# pteryx
-
-```
-             █▓▓        
-             ▒▒▒▒▒▒     
-            ▒▓     ▓▓▓  
-           ▒▒           
-          ▒▒      ██████╗ ████████╗███████╗██████╗ ██╗   ██╗██╗  ██╗
-       ▓▓▒▒▓      ██╔══██╗╚══██╔══╝██╔════╝██╔══██╗╚██╗ ██╔╝╚██╗██╔╝
-    ▓ ▓▒▓▒▓▓      ██████╔╝   ██║   █████╗  ██████╔╝ ╚████╔╝  ╚███╔╝ 
-    ▓ ▓▒ ▓▓▒▒     ██╔═══╝    ██║   ██╔══╝  ██╔══██╗  ╚██╔╝   ██╔██╗ 
-    ▓▓▓    ▓▓     ██║        ██║   ███████╗██║  ██║   ██║   ██╔╝ ██╗
-    ▓▓▓     ██    ╚═╝        ╚═╝   ╚══════╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝      
-      ▒█                
-
-```
+<div align="center">
+  <h1>pteryx</h1>
+  <img width="655" height="268" alt="pteryx-banner" src="https://github.com/user-attachments/assets/36e03011-8e61-41a0-9848-bcd37c1c8b19" />
+</div>
 
 Pteryx is a tool for checking file signatures (magic numbers) to verify file types. It can be used to identify files with incorrect extensions or ones that are intentionally obscuring themselves.
 
