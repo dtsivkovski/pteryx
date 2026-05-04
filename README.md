@@ -36,8 +36,7 @@ This project is developed by Daniel Tsivkovski and licensed under the MIT Licens
 
 ### Outside Data Used
 
-File signature data derived from Gary C. Kessler's File Signature Table:
-https://www.garykessler.net/library/file_sigs_GCK_latest.html
+File signature data derived from [Gary C. Kessler's File Signature Table](https://www.garykessler.net/library/file_sigs_GCK_latest.html).
 
 The original GCK file signature JSON is preserved in [data/file_sigs.json](https://github.com/dtsivkovski/pteryx/blob/main/data/file_sigs.json).
 [data/file_sigs.normalized.json](https://github.com/dtsivkovski/pteryx/blob/main/data/file_sigs_normalized.json) contains parser-oriented cleanup of apparent
