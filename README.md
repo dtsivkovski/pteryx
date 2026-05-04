@@ -11,12 +11,12 @@ go build -o pteryx
 
 ## Usage
 
+Check file extensions against magic number signatures
 ```bash
 pteryx sig <file>
 pteryx sig <directory> -d
 pteryx sig <directory> -d -r
 ```
-
 
 Create hash baseline
 ```bash
@@ -36,11 +36,10 @@ This project is developed by Daniel Tsivkovski and licensed under the MIT Licens
 
 ### Outside Data Used
 
-File signature data derived from Gary C. Kessler's File Signature Table:
-https://www.garykessler.net/library/file_sigs_GCK_latest.html
+File signature data derived from [Gary C. Kessler's File Signature Table](https://www.garykessler.net/library/file_sigs_GCK_latest.html).
 
-The original GCK file signature JSON is preserved in data/file_sigs.json.
-data/file_sigs.normalized.json contains parser-oriented cleanup of apparent
+The original GCK file signature JSON is preserved in [data/file_sigs.json](https://github.com/dtsivkovski/pteryx/blob/main/data/file_sigs.json).
+[data/file_sigs.normalized.json](https://github.com/dtsivkovski/pteryx/blob/main/data/file_sigs_normalized.json) contains parser-oriented cleanup of apparent
 field formatting issues, such as Header offset values like "0(null)".
 
 Copyright © 2002-2026 Gary C. Kessler. Used with attribution.
