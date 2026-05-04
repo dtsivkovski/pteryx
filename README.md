@@ -11,12 +11,12 @@ go build -o pteryx
 
 ## Usage
 
+Check file extensions against magic number signatures
 ```bash
 pteryx sig <file>
 pteryx sig <directory> -d
 pteryx sig <directory> -d -r
 ```
-
 
 Create hash baseline
 ```bash
