@@ -1,5 +1,20 @@
 # pteryx
 
+```
+             █▓▓        
+             ▒▒▒▒▒▒     
+            ▒▓     ▓▓▓  
+           ▒▒           
+          ▒▒      ██████╗ ████████╗███████╗██████╗ ██╗   ██╗██╗  ██╗
+       ▓▓▒▒▓      ██╔══██╗╚══██╔══╝██╔════╝██╔══██╗╚██╗ ██╔╝╚██╗██╔╝
+    ▓ ▓▒▓▒▓▓      ██████╔╝   ██║   █████╗  ██████╔╝ ╚████╔╝  ╚███╔╝ 
+    ▓ ▓▒ ▓▓▒▒     ██╔═══╝    ██║   ██╔══╝  ██╔══██╗  ╚██╔╝   ██╔██╗ 
+    ▓▓▓    ▓▓     ██║        ██║   ███████╗██║  ██║   ██║   ██╔╝ ██╗
+    ▓▓▓     ██    ╚═╝        ╚═╝   ╚══════╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝      
+      ▒█                
+
+```
+
 Pteryx is a tool for checking file signatures (magic numbers) to verify file types. It can be used to identify files with incorrect extensions or ones that are intentionally obscuring themselves.
 
 ## Installation
