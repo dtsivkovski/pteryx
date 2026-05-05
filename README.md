@@ -7,7 +7,19 @@ Pteryx is a tool for checking file signatures (magic numbers) to verify file typ
 
 ## Installation
 
-```go
+You have two options:
+
+1. Install using brew
+
+```bash
+brew install dtsivkovski/tap/pteryx
+```
+
+2. Build from source 
+
+```bash
+git clone https://github.com/dtsivkovski/pteryx.git
+cd pteryx
 go install
 go build -o pteryx
 ```
