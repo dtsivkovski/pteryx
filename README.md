@@ -33,6 +33,8 @@ pteryx sig <directory> -d
 pteryx sig <directory> -d -r
 ```
 
+By default, `sig` lists failures and the summary. Add `-V` to include files that pass signature checks.
+
 Create hash baseline
 ```bash
 pteryx hash create <file>

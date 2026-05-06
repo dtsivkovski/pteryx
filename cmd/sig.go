@@ -25,7 +25,12 @@ Use -d for a directory and -r with -d (or -rd) to scan recursively.`,
 			return err
 		}
 
-		return runPathCheck(args[0], allowDirectory, recursive, logResults)
+		verbose, err := cmd.Flags().GetBool("verbose")
+		if err != nil {
+			return err
+		}
+
+		return runPathCheck(args[0], allowDirectory, recursive, logResults, verbose)
 	},
 }
 
@@ -33,4 +38,5 @@ func init() {
 	sigCmd.Flags().BoolP("directory", "d", false, "check files in a directory")
 	sigCmd.Flags().BoolP("recursive", "r", false, "recursively check directories")
 	sigCmd.Flags().BoolP("log-results", "l", false, "log results to a file")
+	sigCmd.Flags().BoolP("verbose", "V", false, "show files that pass signature checks")
 }

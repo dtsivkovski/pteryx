@@ -18,7 +18,7 @@ type ScanStats struct {
 }
 
 // creates stats object and runs the path check
-func runPathCheck(path string, allowDirectory bool, recursive bool, logResults bool) error {
+func runPathCheck(path string, allowDirectory bool, recursive bool, logResults bool, verbose bool) error {
 	stats := &ScanStats{} // initialize stats to track results
 
 	logFile := (*os.File)(nil) // init empty log file variable
@@ -38,7 +38,7 @@ func runPathCheck(path string, allowDirectory bool, recursive bool, logResults b
 	}
 
 	// run path check with stats tracking
-	err := runPathCheckWithStats(path, allowDirectory, recursive, stats, logFile)
+	err := runPathCheckWithStats(path, allowDirectory, recursive, stats, logFile, verbose)
 	if err != nil {
 		return err
 	}
@@ -49,7 +49,7 @@ func runPathCheck(path string, allowDirectory bool, recursive bool, logResults b
 }
 
 // check if path is file or dir and runs appropriate check, while tracking stats
-func runPathCheckWithStats(path string, allowDirectory bool, recursive bool, stats *ScanStats, logFile *os.File) error {
+func runPathCheckWithStats(path string, allowDirectory bool, recursive bool, stats *ScanStats, logFile *os.File, verbose bool) error {
 	info, err := os.Stat(path)
 	if err != nil { // return error if stat fails
 		return fmt.Errorf("stat %q: %w", path, err)
@@ -60,18 +60,18 @@ func runPathCheckWithStats(path string, allowDirectory bool, recursive bool, sta
 			return fmt.Errorf("%q is a directory; use -d or --directory to check directories", path)
 		}
 
-		return runDirectoryCheck(path, recursive, stats, logFile)
+		return runDirectoryCheck(path, recursive, stats, logFile, verbose)
 	}
 
 	if recursive {
 		return fmt.Errorf("-r or --recursive can only be used with -d or --directory")
 	}
 
-	return runFileCheck(path, false, stats, logFile)
+	return runFileCheck(path, false, stats, logFile, verbose)
 }
 
 // checks each file signature in the entire directory
-func runDirectoryCheck(dirPath string, recursive bool, stats *ScanStats, logFile *os.File) error {
+func runDirectoryCheck(dirPath string, recursive bool, stats *ScanStats, logFile *os.File, verbose bool) error {
 	if recursive {
 		// walk entire dir recursively
 		fmt.Printf("%s✵ Swooping into directory (RECURSIVE):%s %s\n", magenta, reset, dirPath)
@@ -84,7 +84,7 @@ func runDirectoryCheck(dirPath string, recursive bool, stats *ScanStats, logFile
 				return nil
 			}
 
-			return runFileCheck(path, true, stats, logFile)
+			return runFileCheck(path, true, stats, logFile, verbose)
 		})
 	}
 
@@ -103,7 +103,7 @@ func runDirectoryCheck(dirPath string, recursive bool, stats *ScanStats, logFile
 		}
 
 		filePath := filepath.Join(dirPath, entry.Name())
-		if err := runFileCheck(filePath, true, stats, logFile); err != nil {
+		if err := runFileCheck(filePath, true, stats, logFile, verbose); err != nil {
 			return err
 		}
 	}
@@ -112,7 +112,7 @@ func runDirectoryCheck(dirPath string, recursive bool, stats *ScanStats, logFile
 }
 
 // checks the file signature
-func runFileCheck(filePath string, indent bool, stats *ScanStats, logFile *os.File) error {
+func runFileCheck(filePath string, indent bool, stats *ScanStats, logFile *os.File, verbose bool) error {
 	// check if signature map known
 	ext := strings.ToLower(filepath.Ext(filePath))
 	signatures, ok := fileSignatures[ext]
@@ -187,6 +187,10 @@ func runFileCheck(filePath string, indent bool, stats *ScanStats, logFile *os.Fi
 		return nil
 	}
 	stats.Passed++
+
+	if !verbose {
+		return nil
+	}
 
 	if indent { // indent for dir output
 		fmt.Print("  ")
