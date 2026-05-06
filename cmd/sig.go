@@ -20,11 +20,17 @@ Use -d for a directory and -r with -d (or -rd) to scan recursively.`,
 			return err
 		}
 
-		return runPathCheck(args[0], allowDirectory, recursive)
+		logResults, err := cmd.Flags().GetBool("log-results")
+		if err != nil {
+			return err
+		}
+
+		return runPathCheck(args[0], allowDirectory, recursive, logResults)
 	},
 }
 
 func init() {
 	sigCmd.Flags().BoolP("directory", "d", false, "check files in a directory")
 	sigCmd.Flags().BoolP("recursive", "r", false, "recursively check directories")
+	sigCmd.Flags().BoolP("log-results", "l", false, "log results to a file")
 }

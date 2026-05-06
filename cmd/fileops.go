@@ -18,22 +18,26 @@ type ScanStats struct {
 }
 
 // creates stats object and runs the path check
-func runPathCheck(path string, allowDirectory bool, recursive bool) error {
+func runPathCheck(path string, allowDirectory bool, recursive bool, logResults bool) error {
 	stats := &ScanStats{} // initialize stats to track results
 
+	logFile := (*os.File)(nil) // init empty log file variable
+
 	// open log file (or create) for appending
-	logFile, err := openLogFile("pteryx.log")
-	if err != nil {
-		return err
-	}
-	defer func() {
-		if err := closeLogFile(logFile); err != nil {
-			fmt.Fprintln(os.Stderr, err)
+	if logResults {
+		logFile, err := openLogFile("pteryx.log")
+		if err != nil {
+			return err
 		}
-	}()
+		defer func() {
+			if err := closeLogFile(logFile); err != nil {
+				fmt.Fprintln(os.Stderr, err)
+			}
+		}()
+	} 
 
 	// run path check with stats tracking
-	err = runPathCheckWithStats(path, allowDirectory, recursive, stats, logFile)
+	err := runPathCheckWithStats(path, allowDirectory, recursive, stats, logFile)
 	if err != nil {
 		return err
 	}
@@ -173,8 +177,10 @@ func runFileCheck(filePath string, indent bool, stats *ScanStats, logFile *os.Fi
 			fmt.Printf("%s└─ File signature matches: %s%s\n", red, reset, strings.Join(actualExts, ", "))
 		}
 
-		if err := writeMismatchLog(logFile, filePath, ext, actualExts); err != nil {
-			return err
+		if logFile != nil {
+			if err := writeMismatchLog(logFile, filePath, ext, actualExts); err != nil {
+				return err
+			}
 		}
 
 		return nil
