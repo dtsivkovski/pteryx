@@ -25,7 +25,8 @@ func runPathCheck(path string, allowDirectory bool, recursive bool, logResults b
 
 	// open log file (or create) for appending
 	if logResults {
-		logFile, err := openLogFile("pteryx.log")
+		var err error
+		logFile, err = openLogFile("pteryx.log")
 		if err != nil {
 			return err
 		}
@@ -34,7 +35,7 @@ func runPathCheck(path string, allowDirectory bool, recursive bool, logResults b
 				fmt.Fprintln(os.Stderr, err)
 			}
 		}()
-	} 
+	}
 
 	// run path check with stats tracking
 	err := runPathCheckWithStats(path, allowDirectory, recursive, stats, logFile)
