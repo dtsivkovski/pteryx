@@ -16,10 +16,13 @@ const (
 	reset   = "\033[0m"
 )
 
+var version = "0.0.3"
+
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "pteryx",
-	Short: "A forensic file inspection tool",
+	Use:     "pteryx",
+	Short:   "A forensic file inspection tool",
+	Version: version,
 	Long: `
 
              █▓▓        

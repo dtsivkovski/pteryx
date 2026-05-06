@@ -61,12 +61,17 @@ var hashCreateCmd = &cobra.Command{
 			return err
 		}
 
+		logResults, err := cmd.Flags().GetBool("log-results")
+		if err != nil {
+			return err
+		}
+
 		output, err := cmd.Flags().GetString("output")
 		if err != nil {
 			return err
 		}
 
-		return runHashCreate(args[0], allowDirectory, recursive, output)
+		return runHashCreate(args[0], allowDirectory, recursive, output, logResults)
 	},
 }
 
@@ -85,12 +90,17 @@ var hashCompareCmd = &cobra.Command{
 			return err
 		}
 
+		logResults, err := cmd.Flags().GetBool("log-results")
+		if err != nil {
+			return err
+		}
+
 		input, err := cmd.Flags().GetString("input")
 		if err != nil {
 			return err
 		}
 
-		return runHashCompare(args[0], allowDirectory, recursive, input)
+		return runHashCompare(args[0], allowDirectory, recursive, input, logResults)
 	},
 }
 
@@ -100,23 +110,31 @@ func init() {
 
 	hashCreateCmd.Flags().BoolP("directory", "d", false, "hash files in a directory")
 	hashCreateCmd.Flags().BoolP("recursive", "r", false, "recursively hash directories")
+	hashCreateCmd.Flags().BoolP("log-results", "l", false, "log results to a file")
 	hashCreateCmd.Flags().StringP("output", "o", "pteryx.hash", "hash baseline output file") // optional change output file
 
 	hashCompareCmd.Flags().BoolP("directory", "d", false, "compare files in a directory")
 	hashCompareCmd.Flags().BoolP("recursive", "r", false, "recursively compare directories")
+	hashCompareCmd.Flags().BoolP("log-results", "l", false, "log results to a file")
 	hashCompareCmd.Flags().StringP("input", "i", "pteryx.hash", "hash baseline input file") // optional change input file
 }
 
-func runHashCreate(path string, allowDirectory bool, recursive bool, outputPath string) error {
-	logFile, err := openLogFile("pteryx.log") // open log file
-	if err != nil {
-		return err
-	}
-	defer func() {
-		if err := closeLogFile(logFile); err != nil {
-			fmt.Fprintln(os.Stderr, err)
+func runHashCreate(path string, allowDirectory bool, recursive bool, outputPath string, logResults bool) error {
+
+	logFile := (*os.File)(nil) // init empty log file variable
+
+	if logResults {
+		var err error
+		logFile, err = openLogFile("pteryx.log") // open log file
+		if err != nil {
+			return err
 		}
-	}()
+		defer func() {
+			if err := closeLogFile(logFile); err != nil {
+				fmt.Fprintln(os.Stderr, err)
+			}
+		}()
+	}
 
 	// collect all hash records for this path
 	records, root, err := collectHashRecords(path, allowDirectory, recursive, outputPath)
@@ -140,8 +158,10 @@ func runHashCreate(path string, allowDirectory bool, recursive bool, outputPath 
 		return fmt.Errorf("write hash baseline %q: %w", outputPath, err)
 	}
 
-	if err := writeAuditLog(logFile, "HASH_CREATE path=%q output=%q files=%d", path, outputPath, len(records)); err != nil {
-		return err
+	if logFile != nil {
+		if err := writeAuditLog(logFile, "HASH_CREATE path=%q output=%q files=%d", path, outputPath, len(records)); err != nil {
+			return err
+		}
 	}
 
 	fmt.Print(`             █▓▓        
@@ -162,16 +182,21 @@ func runHashCreate(path string, allowDirectory bool, recursive bool, outputPath 
 	return nil
 }
 
-func runHashCompare(path string, allowDirectory bool, recursive bool, inputPath string) error {
-	logFile, err := openLogFile("pteryx.log")
-	if err != nil {
-		return err
-	}
-	defer func() {
-		if err := closeLogFile(logFile); err != nil {
-			fmt.Fprintln(os.Stderr, err)
+func runHashCompare(path string, allowDirectory bool, recursive bool, inputPath string, logResults bool) error {
+	logFile := (*os.File)(nil) // init empty log file variable
+
+	if logResults {
+		var err error
+		logFile, err = openLogFile("pteryx.log")
+		if err != nil {
+			return err
 		}
-	}()
+		defer func() {
+			if err := closeLogFile(logFile); err != nil {
+				fmt.Fprintln(os.Stderr, err)
+			}
+		}()
+	}
 
 	raw, err := os.ReadFile(inputPath)
 	if err != nil {
@@ -197,9 +222,11 @@ func runHashCompare(path string, allowDirectory bool, recursive bool, inputPath 
 		return err
 	}
 
-	if err := writeAuditLog(logFile, "HASH_COMPARE_COMPLETED path=%q input=%q unchanged=%d changed=%d added=%d deleted=%d",
-		path, inputPath, stats.Unchanged, stats.Changed, stats.Added, stats.Deleted); err != nil {
-		return err
+	if logFile != nil {
+		if err := writeAuditLog(logFile, "HASH_COMPARE_COMPLETED path=%q input=%q unchanged=%d changed=%d added=%d deleted=%d",
+			path, inputPath, stats.Unchanged, stats.Changed, stats.Added, stats.Deleted); err != nil {
+			return err
+		}
 	}
 
 	printHashCompareSummary(stats)
