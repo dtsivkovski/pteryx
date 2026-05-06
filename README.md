@@ -45,6 +45,8 @@ pteryx hash compare <file> -i pteryx.hash
 pteryx hash compare <directory> -d -r -i pteryx.hash
 ```
 
+Any function can accept `-l` to enable logging. The log output file is currently labeled `pteryx.log` in the directory in which the command was run.
+
 ## Attribution
 
 This project is developed by Daniel Tsivkovski and licensed under the MIT License. See [LICENSE](LICENSE) for more details.
