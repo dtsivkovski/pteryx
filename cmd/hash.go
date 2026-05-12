@@ -273,6 +273,7 @@ func collectDirectoryHashRecords(dirPath string, recursive bool, baselinePath st
 	if err != nil {
 		return nil, "", fmt.Errorf("resolve directory %q: %w", dirPath, err)
 	}
+	dirPath = root
 
 	// get baseline file
 	baselineAbs, err := filepath.Abs(baselinePath)
